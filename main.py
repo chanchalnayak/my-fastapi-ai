@@ -1,10 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from transformers import pipeline
+import uvicorn
+
 
 app = FastAPI()
 
-# ✅ AI Model Load (distilgpt2)
+# ✅ Load AI Model (distilgpt2)
 try:
     ai_model = pipeline("text-generation", model="distilgpt2")
 except Exception as e:
@@ -26,3 +28,7 @@ def chat(request: ChatRequest):
     
     response = ai_model(request.prompt, max_length=50, do_sample=True)[0]['generated_text']
     return {"response": response}
+
+# ✅ For Render: Proper Port Binding
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
